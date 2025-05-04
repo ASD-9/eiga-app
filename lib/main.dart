@@ -1,4 +1,5 @@
 import 'package:eiga/routes/app_router.dart';
+import 'package:eiga/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,6 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
+      theme: getAppTheme(),
       routerConfig: getAppRouter(),
     );
   }
