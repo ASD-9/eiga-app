@@ -5,10 +5,10 @@ import 'package:eiga/utils/is_tv.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 
-GoRouter getAppRouter() {
+Future<GoRouter> getAppRouter() async {
   if (kIsWeb) {
     return getDesktopRouter();
-  } else if (isTv()) {
+  } else if (await isTv()) {
     return getTvRouter();
   } else {
     return getMobileRouter();

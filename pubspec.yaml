@@ -9,6 +9,7 @@ environment:
   sdk: ^3.7.2
 
 dependencies:
+  device_info_plus: ^11.4.0
   flutter:
     sdk: flutter
   go_router: ^15.1.1

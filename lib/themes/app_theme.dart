@@ -5,10 +5,10 @@ import 'package:eiga/utils/is_tv.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-ThemeData getAppTheme() {
+Future<ThemeData> getAppTheme() async {
   if (kIsWeb) {
     return getDesktopTheme();
-  } else if (isTv()) {
+  } else if (await isTv()) {
     return getTvTheme();
   } else {
     return getMobileTheme();
