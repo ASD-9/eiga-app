@@ -14,6 +14,8 @@ class MoviesProvider extends ChangeNotifier {
   String? _error;
   bool _sagaIsLoading = false;
   String? _sagaError;
+  bool _favoritesIsLoading = false;
+  String? _favoritesError;
 
   final Map<int, MovieModel> _movies = {};
   final List<int> _favoriteMovies = [];
@@ -27,6 +29,8 @@ class MoviesProvider extends ChangeNotifier {
   String? get error => _error;
   bool get sagaIsLoading => _sagaIsLoading;
   String? get sagaError => _sagaError;
+  bool get favoritesIsLoading => _favoritesIsLoading;
+  String? get favoritesError => _favoritesError;
 
   List<MovieModel> get sagasMovies =>
       _sagasMovies.map((id) => _movies[id]!).toList();
@@ -97,6 +101,26 @@ class MoviesProvider extends ChangeNotifier {
       _sagaError = e.toString();
     } finally {
       _sagaIsLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchFavorites(int profilId) async {
+    _favoritesIsLoading = true;
+    _favoritesError = null;
+    notifyListeners();
+    try {
+      final List<MovieModel> movies = await _moviesService.getMoviesByProfil(
+        profilId,
+      );
+      for (var movie in movies) {
+        if (!_movies.containsKey(movie.id)) _movies[movie.id] = movie;
+        _favoriteMovies.add(movie.id);
+      }
+    } catch (e) {
+      _favoritesError = e.toString();
+    } finally {
+      _favoritesIsLoading = false;
       notifyListeners();
     }
   }

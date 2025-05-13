@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:eiga/providers/movies_provider.dart';
+import 'package:eiga/providers/profils_provider.dart';
 import 'package:eiga/routes/app_router.dart';
 import 'package:eiga/services/movies_service.dart';
+import 'package:eiga/services/profils_service.dart';
 import 'package:eiga/themes/app_theme.dart';
 import 'package:eiga/utils/dio_client.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +18,7 @@ void main() async {
 
   final Dio dio = DioClient.dio;
 
+  final ProfilsService profilsService = ProfilsService(dio);
   final MoviesService moviesService = MoviesService(dio);
 
   GoRouter router = await getAppRouter();
@@ -24,6 +27,9 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider<ProfilsProvider>(
+          create: (_) => ProfilsProvider(profilsService),
+        ),
         ChangeNotifierProvider<MoviesProvider>(
           create: (_) => MoviesProvider(moviesService),
         ),
