@@ -1,10 +1,13 @@
 import 'package:dio/dio.dart';
+import 'package:eiga/providers/movies_provider.dart';
 import 'package:eiga/routes/app_router.dart';
+import 'package:eiga/services/movies_service.dart';
 import 'package:eiga/themes/app_theme.dart';
 import 'package:eiga/utils/dio_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,10 +16,21 @@ void main() async {
 
   final Dio dio = DioClient.dio;
 
+  final MoviesService moviesService = MoviesService(dio);
+
   GoRouter router = await getAppRouter();
   ThemeData theme = await getAppTheme();
 
-  runApp(MyApp(router: router, theme: theme));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<MoviesProvider>(
+          create: (_) => MoviesProvider(moviesService),
+        ),
+      ],
+      child: MyApp(router: router, theme: theme),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

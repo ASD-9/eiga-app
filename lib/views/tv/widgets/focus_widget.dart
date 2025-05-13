@@ -2,23 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class FocusWidget extends StatefulWidget {
+  final FocusNode? focusNode;
   final Widget child;
+  final Widget? focusedChild;
   final bool autofocus;
   final VoidCallback? onSelect;
+  final VoidCallback? onFocus;
   final double translationValue;
   final Border? focusedBorder;
   final List<BoxShadow> focusedShadows;
   final double borderRadius;
+  final double scaleRatio;
+  final int animationDuration;
 
   const FocusWidget({
     super.key,
+    this.focusNode,
     required this.child,
+    this.focusedChild,
     this.autofocus = false,
     this.onSelect,
+    this.onFocus,
     this.translationValue = 0,
     this.focusedBorder,
     this.focusedShadows = const [],
     this.borderRadius = 0,
+    this.scaleRatio = 1.1,
+    this.animationDuration = 300,
   });
 
   @override
@@ -52,17 +62,22 @@ class _FocusWidgetState extends State<FocusWidget> {
   @override
   Widget build(BuildContext context) {
     return Focus(
-      focusNode: _focusNode,
+      focusNode: widget.focusNode ?? _focusNode,
       autofocus: widget.autofocus,
       onKeyEvent: (_, event) {
         _handleKeyEvent(event);
         return KeyEventResult.ignored;
       },
+      onFocusChange: (hasFocus) {
+        if (hasFocus) {
+          widget.onFocus?.call();
+        }
+      },
       child: Builder(
         builder: (context) {
           bool isFocused = Focus.of(context).hasFocus;
           return AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
+            duration: Duration(milliseconds: widget.animationDuration),
             transform: Matrix4.translationValues(
               isFocused ? widget.translationValue : 0,
               0,
@@ -74,8 +89,11 @@ class _FocusWidgetState extends State<FocusWidget> {
               borderRadius: BorderRadius.circular(widget.borderRadius),
             ),
             child: Transform.scale(
-              scale: isFocused ? 1.1 : 1,
-              child: widget.child,
+              scale: isFocused ? widget.scaleRatio : 1,
+              child:
+                  isFocused && widget.focusedChild != null
+                      ? widget.focusedChild!
+                      : widget.child,
             ),
           );
         },

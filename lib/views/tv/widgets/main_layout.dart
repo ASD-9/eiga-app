@@ -1,9 +1,6 @@
 import 'package:eiga/themes/app_colors.dart';
 import 'package:eiga/views/tv/widgets/focus_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
-
-Logger logger = Logger(printer: PrettyPrinter());
 
 class MainLayout extends StatefulWidget {
   final Widget body;
