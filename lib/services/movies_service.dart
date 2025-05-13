@@ -22,7 +22,20 @@ class MoviesService {
   Future<List<MovieModel>> getMoviesBySaga(int sagaId) async {
     try {
       final response = await _dio.get('/movies/saga/$sagaId');
-      return (response.data as List).map((e) => MovieModel.fromJson(e)).toList();
+      return (response.data as List)
+          .map((e) => MovieModel.fromJson(e))
+          .toList();
+    } catch (e) {
+      throw ErrorHandler.getErrorMessage(e);
+    }
+  }
+
+  Future<List<MovieModel>> getMoviesByProfil(int profilId) async {
+    try {
+      final response = await _dio.get('/movies/profil/$profilId');
+      return (response.data as List)
+          .map((e) => MovieModel.fromJson(e))
+          .toList();
     } catch (e) {
       throw ErrorHandler.getErrorMessage(e);
     }
