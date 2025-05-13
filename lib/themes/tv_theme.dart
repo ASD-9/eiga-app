@@ -10,6 +10,36 @@ ThemeData getTvTheme() {
       surface: AppColors.background,
       onSurface: AppColors.textPrimary,
     ),
-    textTheme: const TextTheme(),
+
+    textTheme: const TextTheme(
+      headlineLarge: TextStyle(
+        color: AppColors.textPrimary,
+        fontSize: 32,
+        fontWeight: FontWeight.bold,
+      ),
+      titleLarge: TextStyle(color: AppColors.textPrimary, fontSize: 24),
+      titleMedium: TextStyle(
+        color: AppColors.textPrimary,
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      ),
+      bodyMedium: TextStyle(color: AppColors.textPrimary, fontSize: 16),
+    ),
+
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.textPrimary,
+        elevation: 0,
+      ),
+    ),
+
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        backgroundColor: Colors.transparent,
+        foregroundColor: AppColors.textPrimary,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+    ),
   );
 }

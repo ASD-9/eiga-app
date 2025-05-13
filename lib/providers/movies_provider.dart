@@ -1,0 +1,103 @@
+import 'package:eiga/models/movie_model.dart';
+import 'package:eiga/services/movies_service.dart';
+import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
+
+Logger logger = Logger(printer: PrettyPrinter());
+
+class MoviesProvider extends ChangeNotifier {
+  final MoviesService _moviesService;
+
+  MoviesProvider(this._moviesService);
+
+  bool _isLoading = false;
+  String? _error;
+  bool _sagaIsLoading = false;
+  String? _sagaError;
+
+  final Map<int, MovieModel> _movies = {};
+  final List<int> _favoriteMovies = [];
+  final List<int> _sagasMovies = [];
+  int? _selectedMovie;
+  final List<int> _selectedMoviesHistory = [];
+
+  String? _backgroundImage;
+
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+  bool get sagaIsLoading => _sagaIsLoading;
+  String? get sagaError => _sagaError;
+
+  List<MovieModel> get sagasMovies =>
+      _sagasMovies.map((id) => _movies[id]!).toList();
+  MovieModel? get selectedMovie => _movies[_selectedMovie];
+  List<int> get selectedMoviesHistory => _selectedMoviesHistory;
+
+  String get backgroundImage =>
+      _backgroundImage ?? _movies[_selectedMovie]!.imageName;
+
+  bool isInFavorites(int id) => _favoriteMovies.contains(id);
+
+  void setBackgroundImage(String? image) {
+    _backgroundImage = image;
+    notifyListeners();
+  }
+
+  void clearSelectedMovie({bool mustAddToHistory = false}) {
+    if (mustAddToHistory) _selectedMoviesHistory.add(_selectedMovie!);
+    _selectedMovie = null;
+    _sagasMovies.clear();
+    _backgroundImage = null;
+    _isLoading = false;
+    _error = null;
+    _sagaIsLoading = false;
+    _sagaError = null;
+    notifyListeners();
+  }
+
+  Future<void> fetchMovie(int id) async {
+    _isLoading = true;
+    _error = null;
+    _selectedMovie = id;
+    notifyListeners();
+    if (_movies.containsKey(id) && _movies[id]!.isComplete) {
+      _isLoading = false;
+      notifyListeners();
+      return;
+    }
+    try {
+      final MovieModel movie = await _moviesService.getMovie(id);
+      _movies[id] = movie;
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchMoviesBySaga() async {
+    _sagaIsLoading = true;
+    _sagaError = null;
+    notifyListeners();
+    if (_sagasMovies.isNotEmpty) {
+      _sagaIsLoading = false;
+      notifyListeners();
+      return;
+    }
+    try {
+      final List<MovieModel> movies = await _moviesService.getMoviesBySaga(
+        selectedMovie!.saga!.id,
+      );
+      for (var movie in movies) {
+        if (!_movies.containsKey(movie.id)) _movies[movie.id] = movie;
+        if (movie.id != _selectedMovie) _sagasMovies.add(movie.id);
+      }
+    } catch (e) {
+      _sagaError = e.toString();
+    } finally {
+      _sagaIsLoading = false;
+      notifyListeners();
+    }
+  }
+}
