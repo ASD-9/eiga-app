@@ -1,6 +1,11 @@
+import 'package:eiga/models/profil_model.dart';
+import 'package:eiga/providers/profils_provider.dart';
 import 'package:eiga/themes/app_colors.dart';
 import 'package:eiga/views/tv/widgets/focus_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class MainLayout extends StatefulWidget {
   final Widget body;
@@ -33,11 +38,7 @@ class _MainLayoutState extends State<MainLayout> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset(
-                  "assets/images/logo.png",
-                  width: 50,
-                  height: 50,
-                ), // TODO: to replace with profil's avatar pic
+                _buildProfilItem(),
                 Column(
                   children: List.generate(
                     navItems.length,
@@ -73,6 +74,35 @@ class _MainLayoutState extends State<MainLayout> {
           ),
           Expanded(child: widget.body),
         ],
+      ),
+    );
+  }
+
+  Widget _buildProfilItem() {
+    final ProfilModel profil =
+        Provider.of<ProfilsProvider>(context).selectedProfil!;
+    return FocusWidget(
+      onSelect: () => context.push("/profils"),
+      translationValue: 3,
+      focusedChild: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: AppColors.primary,
+            width: 2,
+            strokeAlign: BorderSide.strokeAlignOutside,
+          ),
+          borderRadius: BorderRadius.circular(50),
+        ),
+        child: CircleAvatar(
+          backgroundImage: NetworkImage(
+            "${dotenv.env['API_BASE_URL']}/avatars/${profil.avatar.imageName}",
+          ),
+        ),
+      ),
+      child: CircleAvatar(
+        backgroundImage: NetworkImage(
+          "${dotenv.env['API_BASE_URL']}/avatars/${profil.avatar.imageName}",
+        ),
       ),
     );
   }
