@@ -70,6 +70,7 @@ class MoviesProvider extends ChangeNotifier {
   Future<void> fetchMovie(int id) async {
     _isLoading = true;
     _error = null;
+    _focusedMovie = null;
     _selectedMovie = id;
     notifyListeners();
     if (_movies.containsKey(id) && _movies[id]!.isComplete) {

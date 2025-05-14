@@ -116,7 +116,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                         width:
                                             MediaQuery.of(context).size.width /
                                             7.5,
-                                        autofocus: index == 0,
+                                        autofocus:
+                                            index == 0 &&
+                                            ModalRoute.of(
+                                                  context,
+                                                )!.settings.name ==
+                                                "/home",
                                         mustShowTitle: false,
                                       ),
                                     ),
