@@ -1,3 +1,4 @@
+import 'package:eiga/views/tv/screens/favorites_screen.dart';
 import 'package:eiga/views/tv/screens/home_screen.dart';
 import 'package:eiga/views/tv/screens/movie_screen.dart';
 import 'package:eiga/views/tv/screens/profils_screen.dart';
@@ -9,6 +10,10 @@ GoRouter getTvRouter() {
     initialLocation: "/profils",
     routes: [
       GoRoute(path: "/home", builder: (context, state) => HomeScreen()),
+      GoRoute(
+        path: "/favorites",
+        builder: (context, state) => FavoritesScreen(),
+      ),
       GoRoute(path: "/profils", builder: (context, state) => ProfilsScreen()),
       GoRoute(
         path: "/movie/:movieId",

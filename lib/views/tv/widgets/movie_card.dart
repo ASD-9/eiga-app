@@ -14,6 +14,7 @@ class MovieCard extends StatelessWidget {
   final FocusNode? focusNode;
   final bool autofocus;
   final bool mustShowTitle;
+  final bool mustSetFocus;
 
   const MovieCard({
     super.key,
@@ -23,6 +24,7 @@ class MovieCard extends StatelessWidget {
     this.focusNode,
     this.autofocus = false,
     this.mustShowTitle = true,
+    this.mustSetFocus = true,
   });
 
   @override
@@ -37,7 +39,7 @@ class MovieCard extends StatelessWidget {
           focusedBorder: Border.all(color: AppColors.primary, width: 3),
           scaleRatio: 1,
           onFocus: () {
-            moviesProvider.setFocusedMovie(movie.id);
+            if (mustSetFocus) moviesProvider.setFocusedMovie(movie.id);
           },
           onSelect: () {
             if (moviesProvider.selectedMovie != null) {

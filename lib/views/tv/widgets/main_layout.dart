@@ -20,7 +20,7 @@ class _MainLayoutState extends State<MainLayout> {
   List navItems = [
     {"icon": Icons.search, "route": ""},
     {"icon": Icons.home_outlined, "route": "/home"},
-    {"icon": Icons.bookmark_outline_outlined, "route": ""},
+    {"icon": Icons.bookmark_outline_outlined, "route": "/favorites"},
     {"icon": Icons.interests_outlined, "route": ""},
   ];
 
