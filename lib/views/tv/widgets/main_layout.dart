@@ -1,6 +1,11 @@
+import 'package:eiga/models/profil_model.dart';
+import 'package:eiga/providers/profils_provider.dart';
 import 'package:eiga/themes/app_colors.dart';
 import 'package:eiga/views/tv/widgets/focus_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class MainLayout extends StatefulWidget {
   final Widget body;
@@ -12,13 +17,11 @@ class MainLayout extends StatefulWidget {
 }
 
 class _MainLayoutState extends State<MainLayout> {
-  int selectedItem = 0;
-
   List navItems = [
-    Icons.search,
-    Icons.home_outlined,
-    Icons.bookmark_outline_outlined,
-    Icons.interests_outlined,
+    {"icon": Icons.search, "route": ""},
+    {"icon": Icons.home_outlined, "route": "/home"},
+    {"icon": Icons.bookmark_outline_outlined, "route": ""},
+    {"icon": Icons.interests_outlined, "route": ""},
   ];
 
   @override
@@ -33,11 +36,7 @@ class _MainLayoutState extends State<MainLayout> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset(
-                  "assets/images/logo.png",
-                  width: 50,
-                  height: 50,
-                ), // TODO: to replace with profil's avatar pic
+                _buildProfilItem(),
                 Column(
                   children: List.generate(
                     navItems.length,
@@ -77,16 +76,43 @@ class _MainLayoutState extends State<MainLayout> {
     );
   }
 
+  Widget _buildProfilItem() {
+    final ProfilModel profil =
+        Provider.of<ProfilsProvider>(context).selectedProfil!;
+    return FocusWidget(
+      onSelect: () => context.push("/profils"),
+      translationValue: 3,
+      focusedChild: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: AppColors.primary,
+            width: 2,
+            strokeAlign: BorderSide.strokeAlignOutside,
+          ),
+          borderRadius: BorderRadius.circular(50),
+        ),
+        child: CircleAvatar(
+          backgroundImage: NetworkImage(
+            "${dotenv.env['API_BASE_URL']}/avatars/${profil.avatar.imageName}",
+          ),
+        ),
+      ),
+      child: CircleAvatar(
+        backgroundImage: NetworkImage(
+          "${dotenv.env['API_BASE_URL']}/avatars/${profil.avatar.imageName}",
+        ),
+      ),
+    );
+  }
+
   Widget _buildNavItem(int index) {
     final item = navItems[index];
-    final isSelected = index == selectedItem;
+    final route = ModalRoute.of(context)!.settings.name;
+    final isSelected = item["route"] == route;
 
     return FocusWidget(
       onSelect: () {
-        setState(() {
-          selectedItem = index;
-        });
-        // TODO: add navigation
+        if (!isSelected) context.push(item["route"]);
       },
       translationValue: 5,
       focusedBorder: Border.all(color: AppColors.primary, width: 1),
@@ -101,7 +127,7 @@ class _MainLayoutState extends State<MainLayout> {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
         child: Icon(
-          item,
+          item["icon"],
           color: isSelected ? AppColors.primary : AppColors.textPrimary,
           size: 30,
         ),

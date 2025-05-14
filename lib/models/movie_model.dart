@@ -7,7 +7,7 @@ class MovieModel {
   final int id;
   final String title;
   final String imageName;
-  final String? synopsis;
+  final String synopsis;
   final int? duration;
   final String? trailerUrl;
   final DateTime? releaseDate;
@@ -21,7 +21,7 @@ class MovieModel {
     required this.id,
     required this.title,
     required this.imageName,
-    this.synopsis,
+    required this.synopsis,
     this.duration,
     this.trailerUrl,
     this.releaseDate,

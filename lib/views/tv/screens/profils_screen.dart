@@ -7,6 +7,7 @@ import 'package:eiga/views/tv/widgets/focus_widget.dart';
 import 'package:eiga/views/tv/widgets/reload.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:go_router/go_router.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:logger/web.dart';
 import 'package:provider/provider.dart';
@@ -41,7 +42,7 @@ class _ProfilsScreenState extends State<ProfilsScreen> {
     );
     await moviesProvider.fetchFavorites(profilId);
     if (moviesProvider.favoritesError == null) {
-      // TODO: add redirection to home page
+      context.go("/home");
     }
   }
 
