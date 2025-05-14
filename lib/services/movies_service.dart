@@ -40,4 +40,15 @@ class MoviesService {
       throw ErrorHandler.getErrorMessage(e);
     }
   }
+
+  Future<List<MovieModel>> getRandomMovies() async {
+    try {
+      final response = await _dio.get('/movies/random/8');
+      return (response.data as List)
+          .map((e) => MovieModel.fromJson(e))
+          .toList();
+    } catch (e) {
+      throw ErrorHandler.getErrorMessage(e);
+    }
+  }
 }

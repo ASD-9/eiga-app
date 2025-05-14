@@ -12,6 +12,8 @@ class MovieCard extends StatelessWidget {
   final double height;
   final double width;
   final FocusNode? focusNode;
+  final bool autofocus;
+  final bool mustShowTitle;
 
   const MovieCard({
     super.key,
@@ -19,6 +21,8 @@ class MovieCard extends StatelessWidget {
     required this.height,
     required this.width,
     this.focusNode,
+    this.autofocus = false,
+    this.mustShowTitle = true,
   });
 
   @override
@@ -28,18 +32,19 @@ class MovieCard extends StatelessWidget {
       children: [
         FocusWidget(
           focusNode: focusNode,
+          autofocus: autofocus,
           animationDuration: 0,
-          focusedBorder: Border.all(color: AppColors.primary, width: 2),
+          focusedBorder: Border.all(color: AppColors.primary, width: 3),
           scaleRatio: 1,
           onFocus: () {
-            moviesProvider.setBackgroundImage(movie.imageName);
+            moviesProvider.setFocusedMovie(movie.id);
           },
           onSelect: () {
             if (moviesProvider.selectedMovie != null) {
               moviesProvider.clearSelectedMovie(mustAddToHistory: true);
               context.pushReplacement("/movie/${movie.id}");
             } else {
-              context.go("/movie/${movie.id}");
+              context.push("/movie/${movie.id}");
             }
           },
           child: Column(
@@ -56,17 +61,18 @@ class MovieCard extends StatelessWidget {
                   ),
                 ),
               ),
-              Container(
-                width: width,
-                color: AppColors.background,
-                child: Text(
-                  movie.title,
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                  style: Theme.of(context).textTheme.bodyMedium,
+              if (mustShowTitle)
+                Container(
+                  width: width,
+                  color: AppColors.background,
+                  child: Text(
+                    movie.title,
+                    textAlign: TextAlign.center,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                 ),
-              ),
             ],
           ),
         ),

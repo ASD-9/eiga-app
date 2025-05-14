@@ -1,3 +1,4 @@
+import 'package:eiga/views/tv/screens/home_screen.dart';
 import 'package:eiga/views/tv/screens/movie_screen.dart';
 import 'package:eiga/views/tv/screens/profils_screen.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ GoRouter getTvRouter() {
   return GoRouter(
     initialLocation: "/profils",
     routes: [
+      GoRoute(path: "/home", builder: (context, state) => HomeScreen()),
       GoRoute(path: "/profils", builder: (context, state) => ProfilsScreen()),
       GoRoute(
         path: "/movie/:movieId",

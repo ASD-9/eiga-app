@@ -100,7 +100,7 @@ class _MovieScreenState extends State<MovieScreen> {
                   fit: StackFit.expand,
                   children: [
                     Image.network(
-                      '${dotenv.env["API_BASE_URL"]}/movies/images/${moviesProvider.backgroundImage}',
+                      '${dotenv.env["API_BASE_URL"]}/movies/images/${moviesProvider.focusedMovie?.imageName ?? moviesProvider.selectedMovie!.imageName}',
                       fit: BoxFit.cover,
                       opacity: const AlwaysStoppedAnimation(.15),
                     ),
@@ -145,7 +145,7 @@ class _MovieScreenState extends State<MovieScreen> {
               ),
               const SizedBox(height: 20),
               Text(
-                moviesProvider.selectedMovie!.synopsis!,
+                moviesProvider.selectedMovie!.synopsis,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 5,
                 style: Theme.of(context).textTheme.bodyMedium,
@@ -290,7 +290,7 @@ class _MovieScreenState extends State<MovieScreen> {
         children: [
           Expanded(
             child: Text(
-              moviesProvider.selectedMovie!.synopsis!,
+              moviesProvider.selectedMovie!.synopsis,
               overflow: TextOverflow.ellipsis,
               maxLines: 10,
               style: Theme.of(context).textTheme.bodyMedium,
@@ -378,7 +378,7 @@ class _MovieScreenState extends State<MovieScreen> {
               Provider.of<MoviesProvider>(
                 context,
                 listen: false,
-              ).setBackgroundImage(null);
+              ).setFocusedMovie(null);
             }
           }
           return KeyEventResult.ignored;

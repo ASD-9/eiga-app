@@ -16,14 +16,17 @@ class MoviesProvider extends ChangeNotifier {
   String? _sagaError;
   bool _favoritesIsLoading = false;
   String? _favoritesError;
+  bool _randomIsLoading = false;
+  String? _randomError;
 
   final Map<int, MovieModel> _movies = {};
   final List<int> _favoriteMovies = [];
   final List<int> _sagasMovies = [];
+  final List<int> _randomMovies = [];
+
   int? _selectedMovie;
   final List<int> _selectedMoviesHistory = [];
-
-  String? _backgroundImage;
+  int? _focusedMovie;
 
   bool get isLoading => _isLoading;
   String? get error => _error;
@@ -31,19 +34,24 @@ class MoviesProvider extends ChangeNotifier {
   String? get sagaError => _sagaError;
   bool get favoritesIsLoading => _favoritesIsLoading;
   String? get favoritesError => _favoritesError;
+  bool get randomIsLoading => _randomIsLoading;
+  String? get randomError => _randomError;
 
   List<MovieModel> get sagasMovies =>
       _sagasMovies.map((id) => _movies[id]!).toList();
+  List<MovieModel> get favoriteMovies =>
+      _favoriteMovies.map((id) => _movies[id]!).toList();
+  List<MovieModel> get randomMovies =>
+      _randomMovies.map((id) => _movies[id]!).toList();
+
   MovieModel? get selectedMovie => _movies[_selectedMovie];
   List<int> get selectedMoviesHistory => _selectedMoviesHistory;
-
-  String get backgroundImage =>
-      _backgroundImage ?? _movies[_selectedMovie]!.imageName;
+  MovieModel? get focusedMovie => _movies[_focusedMovie];
 
   bool isInFavorites(int id) => _favoriteMovies.contains(id);
 
-  void setBackgroundImage(String? image) {
-    _backgroundImage = image;
+  void setFocusedMovie(int? id) {
+    _focusedMovie = id;
     notifyListeners();
   }
 
@@ -51,7 +59,7 @@ class MoviesProvider extends ChangeNotifier {
     if (mustAddToHistory) _selectedMoviesHistory.add(_selectedMovie!);
     _selectedMovie = null;
     _sagasMovies.clear();
-    _backgroundImage = null;
+    _focusedMovie = null;
     _isLoading = false;
     _error = null;
     _sagaIsLoading = false;
@@ -121,6 +129,29 @@ class MoviesProvider extends ChangeNotifier {
       _favoritesError = e.toString();
     } finally {
       _favoritesIsLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchRandomMovies() async {
+    _randomIsLoading = true;
+    _randomError = null;
+    notifyListeners();
+    if (_randomMovies.isNotEmpty) {
+      _randomIsLoading = false;
+      notifyListeners();
+      return;
+    }
+    try {
+      final List<MovieModel> movies = await _moviesService.getRandomMovies();
+      for (var movie in movies) {
+        if (!_movies.containsKey(movie.id)) _movies[movie.id] = movie;
+        _randomMovies.add(movie.id);
+      }
+    } catch (e) {
+      _randomError = e.toString();
+    } finally {
+      _randomIsLoading = false;
       notifyListeners();
     }
   }
