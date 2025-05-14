@@ -17,13 +17,11 @@ class MainLayout extends StatefulWidget {
 }
 
 class _MainLayoutState extends State<MainLayout> {
-  int selectedItem = 0;
-
   List navItems = [
-    Icons.search,
-    Icons.home_outlined,
-    Icons.bookmark_outline_outlined,
-    Icons.interests_outlined,
+    {"icon": Icons.search, "route": ""},
+    {"icon": Icons.home_outlined, "route": "/home"},
+    {"icon": Icons.bookmark_outline_outlined, "route": ""},
+    {"icon": Icons.interests_outlined, "route": ""},
   ];
 
   @override
@@ -109,14 +107,12 @@ class _MainLayoutState extends State<MainLayout> {
 
   Widget _buildNavItem(int index) {
     final item = navItems[index];
-    final isSelected = index == selectedItem;
+    final route = ModalRoute.of(context)!.settings.name;
+    final isSelected = item["route"] == route;
 
     return FocusWidget(
       onSelect: () {
-        setState(() {
-          selectedItem = index;
-        });
-        // TODO: add navigation
+        if (!isSelected) context.push(item["route"]);
       },
       translationValue: 5,
       focusedBorder: Border.all(color: AppColors.primary, width: 1),
@@ -131,7 +127,7 @@ class _MainLayoutState extends State<MainLayout> {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
         child: Icon(
-          item,
+          item["icon"],
           color: isSelected ? AppColors.primary : AppColors.textPrimary,
           size: 30,
         ),
