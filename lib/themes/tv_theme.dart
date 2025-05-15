@@ -23,6 +23,7 @@ ThemeData getTvTheme() {
         fontSize: 16,
         fontWeight: FontWeight.bold,
       ),
+      bodyLarge: TextStyle(color: AppColors.textPrimary, fontSize: 20),
       bodyMedium: TextStyle(color: AppColors.textPrimary, fontSize: 16),
     ),
 

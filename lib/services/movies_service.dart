@@ -19,9 +19,31 @@ class MoviesService {
     }
   }
 
+  Future<List<MovieModel>> getMovies() async {
+    try {
+      final response = await _dio.get('/movies');
+      return (response.data as List)
+          .map((e) => MovieModel.fromJson(e))
+          .toList();
+    } catch (e) {
+      throw ErrorHandler.getErrorMessage(e);
+    }
+  }
+
   Future<List<MovieModel>> getMoviesBySaga(int sagaId) async {
     try {
       final response = await _dio.get('/movies/saga/$sagaId');
+      return (response.data as List)
+          .map((e) => MovieModel.fromJson(e))
+          .toList();
+    } catch (e) {
+      throw ErrorHandler.getErrorMessage(e);
+    }
+  }
+
+  Future<List<MovieModel>> getMoviesByCategory(int categoryId) async {
+    try {
+      final response = await _dio.get('/movies/category/$categoryId');
       return (response.data as List)
           .map((e) => MovieModel.fromJson(e))
           .toList();
