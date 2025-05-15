@@ -1,6 +1,7 @@
 import 'package:eiga/views/tv/screens/favorites_screen.dart';
 import 'package:eiga/views/tv/screens/home_screen.dart';
 import 'package:eiga/views/tv/screens/movie_screen.dart';
+import 'package:eiga/views/tv/screens/movies_screen.dart';
 import 'package:eiga/views/tv/screens/profils_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -14,6 +15,7 @@ GoRouter getTvRouter() {
         path: "/favorites",
         builder: (context, state) => FavoritesScreen(),
       ),
+      GoRoute(path: "/movies", builder: (context, state) => MoviesScreen()),
       GoRoute(path: "/profils", builder: (context, state) => ProfilsScreen()),
       GoRoute(
         path: "/movie/:movieId",

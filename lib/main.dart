@@ -1,7 +1,9 @@
 import 'package:dio/dio.dart';
+import 'package:eiga/providers/categories_provider.dart';
 import 'package:eiga/providers/movies_provider.dart';
 import 'package:eiga/providers/profils_provider.dart';
 import 'package:eiga/routes/app_router.dart';
+import 'package:eiga/services/categories_service.dart';
 import 'package:eiga/services/movies_service.dart';
 import 'package:eiga/services/profils_service.dart';
 import 'package:eiga/themes/app_theme.dart';
@@ -20,6 +22,7 @@ void main() async {
 
   final ProfilsService profilsService = ProfilsService(dio);
   final MoviesService moviesService = MoviesService(dio);
+  final CategoriesService categoriesService = CategoriesService(dio);
 
   GoRouter router = await getAppRouter();
   ThemeData theme = await getAppTheme();
@@ -32,6 +35,9 @@ void main() async {
         ),
         ChangeNotifierProvider<MoviesProvider>(
           create: (_) => MoviesProvider(moviesService),
+        ),
+        ChangeNotifierProvider<CategoriesProvider>(
+          create: (_) => CategoriesProvider(categoriesService),
         ),
       ],
       child: MyApp(router: router, theme: theme),

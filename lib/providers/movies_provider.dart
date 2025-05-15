@@ -23,6 +23,7 @@ class MoviesProvider extends ChangeNotifier {
   final List<int> _favoriteMovies = [];
   final List<int> _sagasMovies = [];
   final List<int> _randomMovies = [];
+  final Map<int, List<int>> _moviesByCategory = {};
 
   int? _selectedMovie;
   final List<int> _selectedMoviesHistory = [];
@@ -37,6 +38,7 @@ class MoviesProvider extends ChangeNotifier {
   bool get randomIsLoading => _randomIsLoading;
   String? get randomError => _randomError;
 
+  List<MovieModel> get movies => _movies.values.toList();
   List<MovieModel> get sagasMovies =>
       _sagasMovies.map((id) => _movies[id]!).toList();
   List<MovieModel> get favoriteMovies =>
@@ -49,6 +51,10 @@ class MoviesProvider extends ChangeNotifier {
   MovieModel? get focusedMovie => _movies[_focusedMovie];
 
   bool isInFavorites(int id) => _favoriteMovies.contains(id);
+
+  List<MovieModel> getMoviesByCategory(int categoryId) {
+    return _moviesByCategory[categoryId]!.map((id) => _movies[id]!).toList();
+  }
 
   void setFocusedMovie(int? id) {
     _focusedMovie = id;
@@ -89,6 +95,23 @@ class MoviesProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> fetchMovies() async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+    try {
+      final List<MovieModel> movies = await _moviesService.getMovies();
+      for (var movie in movies) {
+        if (!_movies.containsKey(movie.id)) _movies[movie.id] = movie;
+      }
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   Future<void> fetchMoviesBySaga() async {
     _sagaIsLoading = true;
     _sagaError = null;
@@ -110,6 +133,33 @@ class MoviesProvider extends ChangeNotifier {
       _sagaError = e.toString();
     } finally {
       _sagaIsLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> fetchMoviesByCategory(int categoryId) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+    if (_moviesByCategory.containsKey(categoryId) &&
+        _moviesByCategory[categoryId]!.isNotEmpty) {
+      _isLoading = false;
+      notifyListeners();
+      return;
+    }
+    try {
+      final List<MovieModel> movies = await _moviesService.getMoviesByCategory(
+        categoryId,
+      );
+      _moviesByCategory[categoryId] = [];
+      for (var movie in movies) {
+        if (!_movies.containsKey(movie.id)) _movies[movie.id] = movie;
+        _moviesByCategory[categoryId]!.add(movie.id);
+      }
+    } catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
       notifyListeners();
     }
   }
